@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .warp {
+        width: 850px;
+        height: 850px;
+        margin: 40px auto;
+        background-color: azure;
+        position: relative;
+      }
+      .canvasStyle {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: 1px solid #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="warp">
+      <canvas
+        id="canvasEl"
+        class="canvasStyle"
+        width="800"
+        height="800"
+      ></canvas>
+      <canvas
+        class="canvasStyle"
+        id="canvasEl2"
+        width="800"
+        height="800"
+      ></canvas>
+    </div>
+
+    <script>
+      const canvasEl = document.querySelector('#canvasEl');
+      const outR = 400;
+      let ctx = null;
+
+      const canvasEl2 = document.querySelector('#canvasEl2');
+      let ctx2 = null;
+
+      const arcOne = function (ctx) {
+        ctx.save();
+        ctx.strokeStyle = "#000";
+
+        ctx.translate(outR, outR);
+        var time = new Date();
+        ctx.rotate(
+          ((2 * Math.PI) / 60) * time.getSeconds() +
+            ((2 * Math.PI) / 60000) * time.getMilliseconds()
+        );
+        ctx.beginPath();
+        ctx.arc(0, -outR / 2, outR / 2, 0, Math.PI * 2, true); // 绘制 内圆1
+
+        //  内圆2 起点
+        ctx.moveTo(outR / 4, -(outR * 3) / 4);
+        ctx.arc(0, (-outR * 3) / 4, outR / 4, 0, Math.PI * 2, true); // 绘制 内圆2
+
+        //  内圆3 起点
+        ctx.moveTo(outR / 8, -(outR * 7) / 8);
+        ctx.arc(0, (-outR * 7) / 8, outR / 8, 0, Math.PI * 2, true); // 绘制 内圆3
+
+        //  内圆4 起点
+        ctx.moveTo(outR / 16, -(outR * 15) / 16);
+        ctx.arc(0, (-outR * 15) / 16, outR / 16, 0, Math.PI * 2, true); // 绘制 内圆4
+
+        //  内圆5起点
+        ctx.moveTo(outR / 32, -(outR * 31) / 32);
+        ctx.arc(0, (-outR * 31) / 32, outR / 32, 0, Math.PI * 2, true); // 绘制 内圆5
+        // 闭环
+        ctx.stroke();
+        drawDiameter(time, 1, 5, ctx);
+        ctx.restore();
+      };
+
+      // 直径旋转(自转)
+      const drawDiameter = function (time, grade, max, ctx) {
+        ctx.strokeStyle = "#409eff";
+        const correctionTimeLine = Math.pow(2, grade);
+        const backTimeLine = Math.pow(2, grade + 1);
+        // ctx.save();
+        if (grade === 1) {
+          ctx.rotate(
+            (0 / 60) * time.getSeconds() + (0 / 60000) * time.getMilliseconds()
+          );
+        } else {
+          ctx.rotate(
+            ((correctionTimeLine * Math.PI) / 60) * time.getSeconds() +
+              ((correctionTimeLine * Math.PI) / 60000) * time.getMilliseconds()
+          );
+        }
+
+        ctx.translate(0, -outR / correctionTimeLine);
+        ctx.rotate(
+          -((backTimeLine * Math.PI) / 60) * time.getSeconds() -
+            ((backTimeLine * Math.PI) / 60000) * time.getMilliseconds()
+        );
+        ctx.beginPath();
+        //  内圆内半径
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, outR / correctionTimeLine);
+        //  内圆外半径
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -outR / correctionTimeLine);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = "red";
+        ctx.arc(0, -outR / correctionTimeLine, 3, 0, Math.PI * 2, true); // 绘制 内圆5
+        ctx.stroke();
+
+        // 栈弹出
+        grade++;
+        max--;
+        if (max) {
+          drawDiameter(time, grade, max, ctx);
+        }
+        // ctx.restore();
+      };
+
+      const init1 = function () {
+        ctx = canvasEl.getContext("2d");
+        if (!canvasEl) {
+          requestAnimationFrame(init1);
+          return;
+        }
+        ctx.clearRect(0, 0, 2 * outR, 2 * outR);
+        ctx.beginPath();
+        ctx.strokeStyle = "#000";
+
+        ctx.arc(outR, outR, outR, 0, Math.PI * 2, true); // 绘制
+        ctx.stroke();
+        // 直径
+        ctx.save();
+        ctx.strokeStyle = "#eee";
+        ctx.moveTo(0, outR);
+        ctx.lineTo(2 * outR, outR);
+        ctx.moveTo(outR, 0);
+        ctx.lineTo(outR, 2 * outR);
+        ctx.stroke();
+        ctx.restore();
+
+        // 圆
+        arcOne(ctx);
+        requestAnimationFrame(init1);
+      };
+
+      // 曲线 直径端部轨迹
+      const drawCurve = function (time, grade, max, ctx) {
+        ctx.strokeStyle = "#00ff00";
+        const correctionTimeLine = Math.pow(2, grade);
+        const backTimeLine = Math.pow(2, grade + 1);
+        ctx.save();
+        if (grade === 1) {
+          ctx.rotate(
+            (0 / 60) * time.getSeconds() + (0 / 60000) * time.getMilliseconds()
+          );
+        } else {
+          ctx.rotate(
+            ((correctionTimeLine * Math.PI) / 60) * time.getSeconds() +
+              ((correctionTimeLine * Math.PI) / 60000) * time.getMilliseconds()
+          );
+        }
+        ctx.translate(0, -outR / correctionTimeLine);
+        ctx.rotate(
+          -((backTimeLine * Math.PI) / 60) * time.getSeconds() -
+            ((backTimeLine * Math.PI) / 60000) * time.getMilliseconds()
+        );
+        ctx.beginPath();
+        //  端 轨迹
+        ctx.moveTo(0, -outR / correctionTimeLine + 1);
+        ctx.lineTo(0, -outR / correctionTimeLine);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        grade++;
+        max--;
+        if (max) {
+          drawCurve(time, grade, max, ctx);
+        }
+        ctx.restore();
+      };
+
+      const init2 = function () {
+        ctx2 = canvasEl2.getContext("2d");
+        if (!canvasEl2) {
+          requestAnimationFrame(init2);
+          return;
+        }
+        ctx2.save();
+        ctx2.translate(outR, outR);
+        var time = new Date();
+        ctx2.rotate(
+          ((2 * Math.PI) / 60) * time.getSeconds() +
+            ((2 * Math.PI) / 60000) * time.getMilliseconds()
+        );
+        drawCurve(time, 1, 5, ctx2);
+        requestAnimationFrame(init2);
+        ctx2.restore();
+      };
+      try {
+          requestAnimationFrame(init1);
+          requestAnimationFrame(init2);
+      } catch (error) {
+        console.log(error);
+      }
+      // 线
+      // lineTO(x,y)   moveTo(x,y)
+      // 圆弧
+      // arc(x, y, radius, startAngle, endAngle, anticlockwise)
+      // 画一个以（x,y）为圆心的以 radius 为半径的圆弧（圆），从 startAngle 开始到 endAngle 结束，按照 anticlockwise 给定的方向（默认为顺时针）来生成。
+      // arcTo(x1, y1, x2, y2, radius)
+      // var ctx = canvas.getContext("2d");
+      // ctx.beginPath();
+      // ctx.moveTo(75, 50);
+      // ctx.lineTo(100, 75);
+      // ctx.lineTo(100, 25);
+      // ctx.fill();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .wrap {
+        width: 850px;
+        height: 850px;
+        margin: 40px auto;
+        background-color: #000;
+        position: relative;
+      }
+
+      .canvasStyle {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: 1px solid #eee;
+        margin: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <canvas
+        id="canvasEl"
+        class="canvasStyle"
+        width="800"
+        height="800"
+      ></canvas>
+    </div>
+    <script>
+      const canvasEl = document.querySelector("#canvasEl");
+      const outR = 400;
+      let ctx = null;
+
+      const drwaDot = function (x, y, r, color = "#fff") {
+        // 瓣
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(40, -20, 40, -180, 0, -200);
+        ctx.bezierCurveTo(-40, -180, -40, -20, 0, 0);
+        ctx.fillStyle = color;
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+        // 圆
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+        ctx.fill();
+        ctx.stroke();
+      };
+
+      const step1 = function () {
+        // 内部实心圆
+        ctx.beginPath();
+        // (起点x,起点y,半径x,半径y,旋转的角度，起始角，结果角，顺时针还是逆时针)
+        ctx.ellipse(400, 400, 200, 100, 0, 0, Math.PI * 2);
+
+        // ctx.arc(outR, outR, 25, 0, Math.PI * 2, true);
+        ctx.strokeStyle = "#eee";
+        ctx.fillStyle = "#fff";
+        // 阴影
+        // ctx.shadowOffsetX = 0;
+        // ctx.shadowOffsetY = 0;
+        // ctx.shadowBlur = 30;
+        // ctx.shadowColor = "rgba(255, 255, 255,  1)";
+        ctx.fill();
+        ctx.stroke();
+      };
+
+      const petal = function () {
+        ctx.save();
+        drwaDot(0, -200, 10);
+        ctx.restore();
+      };
+      const start = async function () {
+        ctx = canvasEl.getContext("2d");
+        step1();
+        // ctx.save();
+        // ctx.translate(400, 400);
+        // petal();
+        // ctx.save();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.save();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.rotate(30);
+        // petal();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+        // ctx.restore();
+
+        // petal();
+        // ctx.rotate(45);
+        // petal();
+        // ctx.rotate(45);
+        // petal();
+        // ctx.rotate(45);
+        // petal();
+        // ctx.rotate(45);
+        // petal();
+        // ctx.rotate(45);
+        // petal();
+      };
+
+      try {
+        start();
+      } catch (error) {
+        console.log(error);
+      }
+      // 线
+      // lineTO(x,y)   moveTo(x,y)
+      // 圆弧
+      // arc(x, y, radius, startAngle, endAngle, anticlockwise)
+      // 画一个以（x,y）为圆心的以 radius 为半径的圆弧（圆），从 startAngle 开始到 endAngle 结束，按照 anticlockwise 给定的方向（默认为顺时针）来生成。
+      // arcTo(x1, y1, x2, y2, radius)
+      // var ctx = canvas.getContext("2d");
+      // ctx.beginPath();
+      // ctx.moveTo(75, 50);
+      // ctx.lineTo(100, 75);
+      // ctx.lineTo(100, 25);
+      // ctx.fill();
+
+      //   (起点x,起点y,半径x,半径y,旋转的角度，起始角，结果角，顺时针还是逆时针)
+      //   ctx.ellipse(300,300,200,100,0,0,Math.PI*2);
+    </script>
+  </body>
+</html>

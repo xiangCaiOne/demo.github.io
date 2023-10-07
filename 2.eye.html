@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .wrap {
+        width: 850px;
+        height: 850px;
+        margin: 40px auto;
+        background-color: #000;
+        position: relative;
+      }
+
+      .canvasStyle {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: 1px solid #eee;
+        margin: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <canvas
+        id="canvasEl"
+        class="canvasStyle"
+        width="800"
+        height="800"
+      ></canvas>
+    </div>
+    <script>
+      const canvasEl = document.querySelector("#canvasEl");
+      const outR = 400;
+      let ctx = null;
+
+      // step2 lingGO
+      let lineGO = 0;
+      let lineGOResolve = null;
+      // step3 eyeOpen
+      let cur = 0;
+      let maxEyeHight = 160;
+      let stepResolve3 = null;
+
+      const step1 = function () {
+        // 内部实心圆
+        ctx.beginPath();
+        ctx.arc(outR, outR, 20, 0, Math.PI * 2, true);
+        ctx.strokeStyle = "#eee";
+        ctx.fillStyle = "#fff";
+        // 阴影
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 50;
+        ctx.shadowColor = "rgba(255, 255, 255,  1)";
+        ctx.fill();
+        ctx.stroke();
+        // 外部空心圆
+        ctx.beginPath();
+        ctx.arc(outR, outR, 60, 0, Math.PI * 2, true);
+        ctx.stroke();
+
+        // console.log('step1: init!!!');
+      };
+
+      // step2
+      const startEyeStatus = function () {
+        return new Promise((resolve, reject) => {
+          lineGOResolve = lineGOResolve ? lineGOResolve : resolve;
+          if (lineGO < 320) {
+            lineGO += 5;
+            // console.log(lineGO);
+            ctx.save();
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#fff";
+            ctx.moveTo(240 + lineGO, outR);
+            ctx.lineTo(245 + lineGO, outR);
+            ctx.stroke();
+            ctx.restore();
+            requestAnimationFrame(startEyeStatus);
+          } else {
+            // lingGO 完成 进行下一步骤
+            console.log("step2: lingGO end!!!");
+            lineGOResolve("step2: lingGO end!!!");
+          }
+        });
+      };
+
+      // step3
+      const eyeOpen = async function () {
+        return new Promise((resolve, reject) => {
+          stepResolve3 = stepResolve3 ? stepResolve3 : resolve;
+          ctx.clearRect(0, 0, 2 * outR, 2 * outR);
+          step1();
+          cur += 2;
+          // 曲线轮廓
+          ctx.beginPath();
+          ctx.moveTo(240, outR);
+          ctx.quadraticCurveTo(outR, 400 - cur, 560, outR);
+          ctx.quadraticCurveTo(outR, 400 + cur, 240, outR);
+          ctx.stroke();
+          if (cur < maxEyeHight) {
+            requestAnimationFrame(eyeOpen);
+          } else {
+            console.log("step3: eyeOpen end!!!");
+            stepResolve3("step3: eyeOpen end!!!");
+          }
+        });
+      };
+
+      // step4 moveEye
+      const moveEye = function () {};
+      const start = async function () {
+        ctx = canvasEl.getContext("2d");
+        step1();
+        // console.log('step1: init!!!');
+        const step2Res = await startEyeStatus();
+        const step3Res = await eyeOpen();
+      };
+
+      try {
+        start();
+      } catch (error) {
+        console.log(error);
+      }
+      // 线
+      // lineTO(x,y)   moveTo(x,y)
+      // 圆弧
+      // arc(x, y, radius, startAngle, endAngle, anticlockwise)
+      // 画一个以（x,y）为圆心的以 radius 为半径的圆弧（圆），从 startAngle 开始到 endAngle 结束，按照 anticlockwise 给定的方向（默认为顺时针）来生成。
+      // arcTo(x1, y1, x2, y2, radius)
+      // var ctx = canvas.getContext("2d");
+      // ctx.beginPath();
+      // ctx.moveTo(75, 50);
+      // ctx.lineTo(100, 75);
+      // ctx.lineTo(100, 25);
+      // ctx.fill();
+    </script>
+  </body>
+</html>
