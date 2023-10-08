@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4.rectActionBorder</title>
+    <style>
+      .wrap {
+        width: 850px;
+        height: 850px;
+        margin: 40px auto;
+        background-color: #000;
+        position: relative;
+      }
+
+      .canvasStyle {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: 1px solid #eee;
+        margin: auto;
+      }
+      canvas {
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <canvas id="rect" class="canvasStyle" width="800" height="800"></canvas>
+    </div>
+    <script src="./4.rectActionBorder.js"></script>
+    <script>
+      // 填充颜色
+      // ctx.fillStyle = "rgba(255,165,0,1)";
+      // 线条颜色
+      // ctx.strokeStyle =
+      //         "rgb(0," +
+      //         Math.floor(255 - 42.5 * i) +
+      //         "," +
+      //         Math.floor(255 - 42.5 * j) +
+      //         ")";
+      // 线条宽度
+      // lineWidth = value
+      var rectEl = document.querySelector("#rect");
+      let rect = null;
+      const moveV = 2;
+      const lineW = 2;
+      // draw line
+      const drawLineSegment = function (start, end) {
+        rect.beginPath();
+        rect.moveTo(start.x, start.y);
+        rect.lineTo(end.x, end.y);
+        rect.lineWidth = lineW;
+        //   rect.strokeStyle = "rgba(255,165,0,1)";
+        rect.strokeStyle = "#fff";
+        rect.stroke();
+      };
+      // clear Line
+      const clearLineSegment = function (start, end, width, height) {
+        // ctx.clearRect(x, y, width, height);
+        rect.clearRect(start, end, width, height);
+      };
+      /**
+       * @start      object开始坐标{x，y}
+       * @actonDir   string移动的方向 x ,y
+       * @target     number该方向的目标位移像素值
+       * @status     promise状态 判断某个方向线条渲染完成与否
+       * @isForward  boolean 前进为1 -1
+       */
+      const drawer = function (start, actonDir, target, status, isForward) {
+        // 线条渲染的方向是向前还是向后
+        const dir = isForward ? 1 : -1;
+        // 判断当前方向的线条是否 渲染完成
+        const endJudging = function (left, right) {
+          if (isForward) {
+            return left >= right;
+          } else {
+            return left <= right;
+          }
+        };
+        //
+        const _start = {
+          x: start.x || 0,
+          y: start.y || 0,
+        };
+        const _end = {
+          x: _start.x,
+          y: _start.y,
+        };
+        _end[actonDir] = _start[actonDir] + moveV * dir;
+        return new Promise(async (resolve, reject) => {
+          window.requestAnimationFrame(() => {
+            drawLineSegment(_start, _end);
+            _start[actonDir] = _end[actonDir];
+            _end[actonDir] = _start[actonDir] + moveV * dir;
+            if (endJudging(_start[actonDir], target)) {
+              status("reder end");
+            } else {
+              status = status || resolve;
+              drawer(_start, actonDir, target, status, isForward);
+            }
+          });
+        });
+      };
+      /**
+       * @start      object开始坐标{x，y}
+       * @actonDir   string移动的方向 x ,y
+       * @target     number该方向的目标位移像素值
+       * @status     promise状态 判断某个方向线条渲染完成与否
+       * @isForward  boolean 前进为1 -1
+       */
+      const clear = function (start, actonDir, target, status, isForward) {
+        // 线条渲染的方向是向前还是向后
+        const dir = isForward ? 1 : -1;
+        // 判断当前方向的线条是否 渲染完成
+        const endJudging = function (left, right) {
+          if (isForward) {
+            return left >= right;
+          } else {
+            return left <= right;
+          }
+        };
+        const _start = {
+          x: start.x || 0,
+          y: start.y || 0,
+        };
+        const _end = {
+          x: _start.x,
+          y: _start.y,
+        };
+        _end[actonDir] = _start[actonDir] + moveV * dir;
+        return new Promise(async (resolve, reject) => {
+          window.requestAnimationFrame(() => {
+            clearLineSegment(_start.x, _start.y, moveV, lineW);
+            _start[actonDir] = _end[actonDir];
+            _end[actonDir] = _start[actonDir] + moveV * dir;
+            if (endJudging(_start[actonDir], target)) {
+              status("end");
+            } else {
+              status = status || resolve;
+              clear(_start, actonDir, target, status, isForward);
+            }
+          });
+        });
+      };
+
+      function drawLoop() {
+        return new Promise(async (resolve, reject) => {
+          for (let i = 0; i < rederLines.length; i++) {
+            await drawer(...rederLines[i]);
+          }
+          setTimeout(async () => {
+            for (let i = 0; i < clearLines.length; i++) {
+              await clear(...clearLines[i]);
+            }
+            setTimeout(async () => {
+              await drawLoop();
+              resolve();
+            }, 500);
+          }, 500);
+        });
+      }
+
+      rect = rectEl.getContext("2d");
+      rect.translate(400, 400);
+      rect.font = "bold 20px serif";
+      rect.fillStyle = "#fff";
+      rect.fillText("caster's Blog", 8, 30);
+      drawLoop();
+    </script>
+  </body>
+</html>

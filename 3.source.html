@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>3.source</title>
     <style>
       .wrap {
         width: 850px;
@@ -59,7 +59,6 @@
         ctx.beginPath();
         // (起点x,起点y,半径x,半径y,旋转的角度，起始角，结果角，顺时针还是逆时针)
         ctx.ellipse(400, 400, 200, 100, 0, 0, Math.PI * 2);
-
         // ctx.arc(outR, outR, 25, 0, Math.PI * 2, true);
         ctx.strokeStyle = "#eee";
         ctx.fillStyle = "#fff";
@@ -79,37 +78,37 @@
       };
       const start = async function () {
         ctx = canvasEl.getContext("2d");
-        step1();
-        // ctx.save();
-        // ctx.translate(400, 400);
-        // petal();
-        // ctx.save();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.save();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.rotate(30);
-        // petal();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
-        // ctx.restore();
+        // step1();
+        ctx.translate(400, 400);
+        ctx.save();
+        petal();
+        ctx.save();
+        ctx.rotate(30);
+        petal();
+        ctx.save();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.rotate(30);
+        petal();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
 
         // petal();
         // ctx.rotate(45);

@@ -19,11 +19,11 @@
         justify-content: center;
         flex-wrap: wrap;
       }
-      .demos .h2{
+      .demos .h2 {
         text-align: center;
         width: 100%;
       }
-      .tu_item{
+      .tu_item {
         display: inline-block;
         background: transparent;
         font-size: 1.1rem;
@@ -31,17 +31,18 @@
         max-width: 100%;
         padding: 0.5rem 0.875rem 0.875rem;
         border-radius: 6px;
+        color: inherit;
+        text-decoration: none;
       }
-      .tu_item:hover{
-       background-color: #88888811; 
+      .tu_item:hover {
+        background-color: #88888811;
       }
-      
     </style>
   </head>
   <body>
     <div class="container">
       <div id="demos" class="demos">
-        <h2 class="h2">Tu</好>
+        <h2 class="h2">peoject</h2>
       </div>
     </div>
     <script src="./datas.js"></script>
@@ -53,9 +54,8 @@
                   ${v.title}
                 </a>`;
       });
-      const demoWrap = document.createElement('div');
-      console.log(demoWrap);
-      demoWrap.innerHTML = temp
+      const demoWrap = document.createElement("div");
+      demoWrap.innerHTML = temp;
       demos.appendChild(demoWrap);
       // demos.i
     </script>
